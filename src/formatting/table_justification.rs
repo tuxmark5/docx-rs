@@ -29,6 +29,7 @@ pub enum TableJustificationVal {
     Start,
     End,
     Center,
+    Right
 }
 
 __string_enum! {
@@ -36,6 +37,7 @@ __string_enum! {
         Start = "start",
         End = "end",
         Center = "center",
+        Right = "right",
     }
 }
 
