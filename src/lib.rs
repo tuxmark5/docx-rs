@@ -80,6 +80,7 @@
 mod macros;
 
 pub mod app;
+pub mod comments;
 pub mod content_type;
 pub mod core;
 pub mod document;

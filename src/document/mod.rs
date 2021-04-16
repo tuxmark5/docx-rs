@@ -6,6 +6,7 @@ mod body;
 mod bookmark_end;
 mod bookmark_start;
 mod r#break;
+mod comment_range;
 mod grid_column;
 mod hyperlink;
 mod paragraph;
@@ -17,8 +18,21 @@ mod table_row;
 mod text;
 
 pub use self::{
-    body::*, bookmark_end::*, bookmark_start::*, grid_column::*, hyperlink::*, paragraph::*,
-    r#break::*, run::*, table::*, table::*, table_cell::*, table_grid::*, table_row::*, text::*,
+    body::*, 
+    bookmark_end::*, 
+    bookmark_start::*, 
+    comment_range::*, 
+    grid_column::*, 
+    hyperlink::*, 
+    paragraph::*,
+    r#break::*, 
+    run::*, 
+    table::*, 
+    table::*, 
+    table_cell::*, 
+    table_grid::*, 
+    table_row::*, 
+    text::*,
 };
 
 use std::io::Write;

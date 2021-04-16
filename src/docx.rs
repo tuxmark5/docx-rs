@@ -6,6 +6,7 @@ use zip::{result::ZipError, write::FileOptions, CompressionMethod, ZipArchive, Z
 
 use crate::{
     app::App,
+    comments::Comments,
     content_type::ContentTypes,
     core::Core,
     document::Document,
@@ -25,6 +26,8 @@ pub struct Docx<'a> {
     pub app: Option<App<'a>>,
     /// Specifies core properties part
     pub core: Option<Core<'a>>,
+    /// Specifies comments part
+    pub comments: Option<Comments<'a>>,
     /// Specifies the content type of relationship parts and the main document part.
     pub content_types: ContentTypes<'a>,
     /// Specifies the main document part.
@@ -116,6 +119,7 @@ impl<'a> Docx<'a> {
 pub struct DocxFile {
     app: Option<String>,
     content_types: String,
+    comments: Option<String>,
     core: Option<String>,
     document: String,
     document_rels: Option<String>,
@@ -153,6 +157,7 @@ impl DocxFile {
         }
 
         let app = option_read!(App, "docProps/app.xml");
+        let comments = option_read!(ContentTypes, "word/comments.xml");
         let content_types = read!(ContentTypes, "[Content_Types].xml");
         let core = option_read!(Core, "docProps/core.xml");
         let document_rels = option_read!(Relationships, "word/_rels/document.xml.rels");
@@ -163,6 +168,7 @@ impl DocxFile {
 
         Ok(DocxFile {
             app,
+            comments,
             content_types,
             core,
             document_rels,
@@ -188,6 +194,12 @@ impl DocxFile {
         };
 
         let document = Document::from_str(&self.document)?;
+
+        let comments = if let Some(content) = &self.comments {
+            Some(Comments::from_str(content)?)
+        } else {
+            None
+        };
 
         let content_types = ContentTypes::from_str(&self.content_types)?;
 
@@ -220,6 +232,7 @@ impl DocxFile {
 
         Ok(Docx {
             app,
+            comments,
             content_types,
             core,
             document,
