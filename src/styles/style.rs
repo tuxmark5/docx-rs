@@ -23,20 +23,32 @@ use crate::{
 #[cfg_attr(test, derive(PartialEq))]
 #[xml(tag = "w:style")]
 pub struct Style<'a> {
-    /// Specifies the type of style.
-    #[xml(attr = "w:type")]
-    pub ty: StyleType,
+    /// Specifies the default style
+    #[xml(attr = "w:default")]
+    pub is_default: Option<u8>,
+
     /// Specifies the unique identifier
     ///
     /// This identifier is used throughout the document to apply style in content.
     #[xml(attr = "w:styleId")]
     pub style_id: Cow<'a, str>,
+
+    /// Specifies the type of style.
+    #[xml(attr = "w:type")]
+    pub ty: StyleType,
+
+    /// Specifies the base style
+    #[xml(child = "w:basedOn")]
+    pub based_on: Option<BasedOn<'a>>,
+
     /// Specifies the primary name
     #[xml(child = "w:name")]
     pub name: Option<StyleName<'a>>,
+
     /// Specifies a set of paragraph properties
     #[xml(default, child = "w:pPr")]
     pub paragraph: ParagraphProperty<'a>,
+    
     /// Specifies a set of character properties
     #[xml(default, child = "w:rPr")]
     pub character: CharacterProperty<'a>,
@@ -45,8 +57,11 @@ pub struct Style<'a> {
 impl<'a> Style<'a> {
     pub fn new<T: Into<Cow<'a, str>>>(ty: StyleType, style_id: T) -> Self {
         Style {
-            ty,
+            is_default: None,
             style_id: style_id.into(),
+            ty,
+
+            based_on: None,
             name: None,
             paragraph: ParagraphProperty::default(),
             character: CharacterProperty::default(),
@@ -57,6 +72,13 @@ impl<'a> Style<'a> {
     __setter!(name: Option<StyleName<'a>>);
     __setter!(paragraph: ParagraphProperty<'a>);
     __setter!(character: CharacterProperty<'a>);
+}
+
+#[derive(Debug, XmlRead, XmlWrite)]
+#[xml(tag = "w:basedOn")]
+pub struct BasedOn<'a> {
+    #[xml(attr = "w:val")]
+    pub value: Cow<'a, str>,
 }
 
 #[derive(Debug, XmlRead, XmlWrite)]
@@ -73,7 +95,7 @@ impl<'a, S: Into<Cow<'a, str>>> From<S> for StyleName<'a> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 #[cfg_attr(test, derive(PartialEq))]
 pub enum StyleType {
     Character,
