@@ -23,12 +23,15 @@ pub struct ParagraphProperty<'a> {
     /// Specifies the style ID of the paragraph style.
     #[xml(child = "w:pStyle")]
     pub style_id: Option<ParagraphStyleId<'a>>,
+
     /// Specifies the paragraph alignment.
     #[xml(child = "w:jc")]
     pub justification: Option<Justification>,
+
     /// Specifies borders for the paragraph.
     #[xml(child = "w:pBdr")]
     pub border: Option<Borders<'a>>,
+
     /// Specifies that the paragraph should be numbered.
     #[xml(child = "w:numPr")]
     pub numbering: Option<NumberingProperty>,

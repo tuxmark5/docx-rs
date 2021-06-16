@@ -9,7 +9,7 @@ use crate::__xml_test_suites;
 ///
 /// let id = NumberingId::from(42usize);
 /// ```
-#[derive(Debug, Default, XmlRead, XmlWrite)]
+#[derive(Clone, Copy, Debug, Default, XmlRead, XmlWrite)]
 #[cfg_attr(test, derive(PartialEq))]
 #[xml(tag = "w:numId")]
 pub struct NumberingId {

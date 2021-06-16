@@ -31,6 +31,7 @@ pub struct Styles<'a> {
     /// Specifies the default set of properties.
     #[xml(default, child = "w:docDefaults")]
     pub default: DefaultStyle<'a>,
+    
     /// Specifies a set of properties.
     #[xml(child = "w:style")]
     pub styles: Vec<Style<'a>>,

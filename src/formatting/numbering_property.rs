@@ -10,13 +10,14 @@ use crate::formatting::{IndentLevel, NumberingId};
 ///
 /// let prop = NumberingProperty::from((20, 40));
 /// ```
-#[derive(Debug, Default, XmlRead, XmlWrite)]
+#[derive(Clone, Copy, Debug, Default, XmlRead, XmlWrite)]
 #[cfg_attr(test, derive(PartialEq))]
 #[xml(tag = "w:numPr")]
 pub struct NumberingProperty {
     /// Specifies a reference to a numbering definition instance
     #[xml(child = "w:numId")]
     pub id: Option<NumberingId>,
+    
     /// Specifies the numbering level of the numbering definition to use for the paragraph.
     #[xml(child = "w:ilvl")]
     pub level: Option<IndentLevel>,
