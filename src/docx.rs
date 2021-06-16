@@ -12,6 +12,7 @@ use crate::{
     document::Document,
     error::DocxResult,
     font_table::FontTable,
+    numbering::Numberings,
     rels::Relationships,
     schema::{
         SCHEMA_CORE, SCHEMA_FONT_TABLE, SCHEMA_OFFICE_DOCUMENT, SCHEMA_REL_EXTENDED, SCHEMA_STYLES,
@@ -34,6 +35,8 @@ pub struct Docx<'a> {
     pub document: Document<'a>,
     /// Specifies the font table part
     pub font_table: Option<FontTable<'a>>,
+    /// Specifies the numbering part
+    pub numbering: Option<Numberings<'a>>,
     /// Specifies the style definitions part
     pub styles: Styles<'a>,
     /// Specifies the package-level relationship to the main document part
@@ -124,6 +127,7 @@ pub struct DocxFile {
     document: String,
     document_rels: Option<String>,
     font_table: Option<String>,
+    numbering: Option<String>,
     rels: String,
     styles: Option<String>,
 }
@@ -163,6 +167,7 @@ impl DocxFile {
         let document_rels = option_read!(Relationships, "word/_rels/document.xml.rels");
         let document = read!(Document, "word/document.xml");
         let font_table = option_read!(FontTable, "word/fontTable.xml");
+        let numbering = option_read!(FontTable, "word/numbering.xml");
         let rels = read!(Relationships, "_rels/.rels");
         let styles = option_read!(Styles, "word/styles.xml");
 
@@ -174,6 +179,7 @@ impl DocxFile {
             document_rels,
             document,
             font_table,
+            numbering,
             rels,
             styles,
         })
@@ -221,6 +227,12 @@ impl DocxFile {
             None
         };
 
+        let numbering = if let Some(content) = &self.numbering {
+            Some(Numberings::from_str(content)?)
+        } else {
+            None
+        };
+
         let rels = Relationships::from_str(&self.rels)?;
 
         let styles = self
@@ -238,6 +250,7 @@ impl DocxFile {
             document,
             document_rels,
             font_table,
+            numbering,
             rels,
             styles,
         })

@@ -88,6 +88,7 @@ mod docx;
 mod error;
 pub mod font_table;
 pub mod formatting;
+pub mod numbering;
 pub mod rels;
 mod schema;
 pub mod styles;
