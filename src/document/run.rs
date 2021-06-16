@@ -4,7 +4,7 @@ use strong_xml::{XmlRead, XmlWrite};
 
 use crate::{
     __setter, __xml_test_suites,
-    document::{r#break::Break, text::Text},
+    document::{r#break::Break, tab::Tab, text::Text},
     formatting::CharacterProperty,
 };
 
@@ -32,7 +32,11 @@ pub struct Run<'a> {
     /// Just as paragraph, a run's properties is applied to all the contents of the run.
     #[xml(default, child = "w:rPr")]
     pub property: CharacterProperty<'a>,
-    #[xml(child = "w:t", child = "w:br")]
+    #[xml(
+        child = "w:br",
+        child = "w:t",
+        child = "w:tab"
+    )]
     /// Specifies the content of a run
     pub content: Vec<RunContent<'a>>,
 }
@@ -60,15 +64,17 @@ impl<'a> Run<'a> {
 
     pub fn iter_text(&self) -> impl Iterator<Item = &Cow<'a, str>> {
         self.content.iter().filter_map(|content| match content {
-            RunContent::Text(Text { text, .. }) => Some(text),
             RunContent::Break(_) => None,
+            RunContent::Tab(_) => None,
+            RunContent::Text(Text { text, .. }) => Some(text),
         })
     }
 
     pub fn iter_text_mut(&mut self) -> impl Iterator<Item = &mut Cow<'a, str>> {
         self.content.iter_mut().filter_map(|content| match content {
-            RunContent::Text(Text { text, .. }) => Some(text),
             RunContent::Break(_) => None,
+            RunContent::Tab(_) => None,
+            RunContent::Text(Text { text, .. }) => Some(text),
         })
     }
 }
@@ -77,10 +83,14 @@ impl<'a> Run<'a> {
 #[derive(Debug, From, XmlRead, XmlWrite)]
 #[cfg_attr(test, derive(PartialEq))]
 pub enum RunContent<'a> {
-    #[xml(tag = "w:t")]
-    Text(Text<'a>),
     #[xml(tag = "w:br")]
     Break(Break),
+
+    #[xml(tag = "w:tab")]
+    Tab(Tab),
+
+    #[xml(tag = "w:t")]
+    Text(Text<'a>),
 }
 
 __xml_test_suites!(

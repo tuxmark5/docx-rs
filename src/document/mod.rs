@@ -11,6 +11,7 @@ mod grid_column;
 mod hyperlink;
 mod paragraph;
 mod run;
+mod tab;
 mod table;
 mod table_cell;
 mod table_grid;
