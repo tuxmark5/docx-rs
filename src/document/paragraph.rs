@@ -1,5 +1,7 @@
 use derive_more::From;
 use std::borrow::Cow;
+use std::fmt::{self, Display};
+use std::str::FromStr;
 use strong_xml::{XmlRead, XmlWrite};
 
 use crate::{
@@ -32,11 +34,16 @@ use crate::{
 #[cfg_attr(test, derive(PartialEq))]
 #[xml(tag = "w:p")]
 pub struct Paragraph<'a> {
+    /// Specifies unique paragraph ID
+    #[xml(attr = "w14:paraId")]
+    pub para_id: Option<ParagraphId>,
+
     /// Specifies the properties of a paragraph
     ///
     /// This information is applied to all the contents of the paragraph.
     #[xml(default, child = "w:pPr")]
     pub property: ParagraphProperty<'a>,
+    
     /// Specifes the run contents of a paragraph
     ///
     /// Run is a region of text with properties. Each paragraph containes one or more runs.
@@ -108,6 +115,26 @@ pub enum ParagraphContent<'a> {
     BookmarkStart(BookmarkStart<'a>),
     #[xml(tag = "w:bookmarkEnd")]
     BookmarkEnd(BookmarkEnd<'a>),
+}
+
+#[derive(Copy, Clone, Debug, Default)]
+pub struct ParagraphId {
+    pub value: u32
+}
+
+impl Display for ParagraphId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:08X}", self.value)
+    }
+}
+
+impl FromStr for ParagraphId {
+    type Err = std::num::ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let value = u32::from_str_radix(s, 16)?;
+        Ok(Self { value })
+    }
 }
 
 __xml_test_suites!(
