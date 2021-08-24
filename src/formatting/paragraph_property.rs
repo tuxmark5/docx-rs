@@ -35,6 +35,14 @@ pub struct ParagraphProperty<'a> {
     /// Specifies that the paragraph should be numbered.
     #[xml(child = "w:numPr")]
     pub numbering: Option<NumberingProperty>,
+
+    /// Specifies the outline level
+    #[xml(child = "w:outlineLvl")]
+    pub outline_level: Option<OutlineLevel>,
+
+    /// Specifies section properties
+    #[xml(child = "w:sectPr")]
+    pub section: Option<SectionProperty>,
 }
 
 impl<'a> ParagraphProperty<'a> {
@@ -43,6 +51,19 @@ impl<'a> ParagraphProperty<'a> {
     __setter!(border: Option<Borders<'a>>);
     __setter!(numbering: Option<NumberingProperty>);
 }
+
+#[derive(Clone, Copy, Debug, XmlRead, XmlWrite)]
+#[cfg_attr(test, derive(PartialEq))]
+#[xml(tag = "w:outlineLvl")]
+pub struct OutlineLevel {
+    #[xml(attr = "w:val")]
+    pub value: usize,
+}
+
+#[derive(Debug, Default, XmlRead, XmlWrite)]
+#[cfg_attr(test, derive(PartialEq))]
+#[xml(tag = "w:sectPr")]
+pub struct SectionProperty { }
 
 #[derive(Debug, XmlRead, XmlWrite)]
 #[cfg_attr(test, derive(PartialEq))]
