@@ -156,7 +156,7 @@ impl DocxFile {
                         file.read_to_string(&mut buffer)?;
                         Some(buffer)
                     }
-                };
+                }
             };
         }
 
