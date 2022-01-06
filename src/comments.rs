@@ -27,5 +27,5 @@ pub struct Comment<'a> {
 
     // Specifies the body of the comment.
     #[xml(child = "w:p")]
-    pub content: Paragraph<'a>,
+    pub content: Vec<Paragraph<'a>>,
 }
