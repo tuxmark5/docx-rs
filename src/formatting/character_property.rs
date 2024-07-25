@@ -1,9 +1,8 @@
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
-
 use crate::{
-    __setter, __xml_test_suites,
+    __setter, 
+    __xml_test_suites,
     formatting::{Bold, Color, Dstrike, Italics, Outline, Size, Strike, Underline},
+    private_prelude::*,
 };
 
 /// Character Property

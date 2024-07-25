@@ -1,6 +1,5 @@
 use crate::__string_enum;
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
+use crate::private_prelude::*;
 
 #[derive(Debug, Default, XmlRead)]
 #[cfg_attr(test, derive(PartialEq))]
@@ -13,7 +12,7 @@ pub struct Level<'a> {
     pub level_text: LevelText<'a>,
 
     #[xml(child = "w:numFmt")]
-    pub numbering_format: NumberingFormat,
+    pub numbering_format: Option<NumberingFormat>,
 
     #[xml(child = "w:start")]
     pub start: Option<Start>,
@@ -38,6 +37,7 @@ pub struct NumberingFormat {
 #[derive(Clone, Copy, Debug)]
 #[cfg_attr(test, derive(PartialEq))]
 pub enum NumberingFormatVal {
+    ArabicAlpha,
     Bullet,
     Decimal,
     DecimalZero,
@@ -57,6 +57,7 @@ impl Default for NumberingFormatVal {
 
 __string_enum! {
     NumberingFormatVal {
+        ArabicAlpha = "arabicAlpha",
         Bullet = "bullet",
         Decimal = "decimal",
         DecimalZero = "decimalZero",

@@ -1,6 +1,8 @@
-use strong_xml::{XmlRead, XmlWrite};
-
-use crate::{__string_enum, __xml_test_suites};
+use crate::{
+    __string_enum, 
+    __xml_test_suites,
+    private_prelude::*,
+};
 
 /// Justification
 ///
@@ -26,24 +28,34 @@ impl From<JustificationVal> for Justification {
 #[derive(Debug)]
 #[cfg_attr(test, derive(PartialEq))]
 pub enum JustificationVal {
-    Start,
-    End,
-    Center,
     Both,
+    Center,
     Distribute,
-    Right,
+    End,
+    HighKashida,
     Left,
+    LowKashida,
+    MediumKashida,
+    NumTab,
+    Right,
+    Start,
+    ThaiDistribute,
 }
 
 __string_enum! {
     JustificationVal {
-        Start = "start",
-        End = "end",
-        Center = "center",
         Both = "both",
+        Center = "center",
         Distribute = "distribute",
-        Right = "right",
+        End = "end",
+        HighKashida = "highKashida",
         Left = "left",
+        LowKashida = "lowKashida",
+        MediumKashida = "mediumKashida",
+        NumTab = "numTab",
+        Right = "right",
+        Start = "start",
+        ThaiDistribute = "thaiDistribute",
     }
 }
 

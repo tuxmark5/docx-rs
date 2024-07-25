@@ -1,6 +1,7 @@
-use strong_xml::{XmlRead, XmlWrite};
-
-use crate::__xml_test_suites;
+use crate::{
+    __xml_test_suites,
+    private_prelude::*,
+};
 
 #[derive(Debug, Default, XmlRead, XmlWrite)]
 #[cfg_attr(test, derive(PartialEq))]

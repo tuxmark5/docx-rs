@@ -1,10 +1,10 @@
 use derive_more::From;
+use hard_xml::{XmlRead, XmlWrite};
 use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
 
 use crate::{
     __setter, __xml_test_suites,
-    document::{r#break::Break, tab::Tab, text::Text},
+    document::{r#break::Break, tab::Tab, text::Text, Drawing},
     formatting::CharacterProperty,
 };
 
@@ -35,7 +35,8 @@ pub struct Run<'a> {
     #[xml(
         child = "w:br",
         child = "w:t",
-        child = "w:tab"
+        child = "w:tab",
+        child = "w:drawing"
     )]
     /// Specifies the content of a run
     pub content: Vec<RunContent<'a>>,
@@ -65,6 +66,7 @@ impl<'a> Run<'a> {
     pub fn iter_text(&self) -> impl Iterator<Item = &Cow<'a, str>> {
         self.content.iter().filter_map(|content| match content {
             RunContent::Break(_) => None,
+            RunContent::Drawing(_) => None,
             RunContent::Tab(_) => None,
             RunContent::Text(Text { text, .. }) => Some(text),
         })
@@ -73,6 +75,7 @@ impl<'a> Run<'a> {
     pub fn iter_text_mut(&mut self) -> impl Iterator<Item = &mut Cow<'a, str>> {
         self.content.iter_mut().filter_map(|content| match content {
             RunContent::Break(_) => None,
+            RunContent::Drawing(_) => None,
             RunContent::Tab(_) => None,
             RunContent::Text(Text { text, .. }) => Some(text),
         })
@@ -85,6 +88,9 @@ impl<'a> Run<'a> {
 pub enum RunContent<'a> {
     #[xml(tag = "w:br")]
     Break(Break),
+
+    #[xml(tag = "w:drawing")]
+    Drawing(Drawing<'a>),
 
     #[xml(tag = "w:tab")]
     Tab(Tab),

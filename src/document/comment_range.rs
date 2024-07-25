@@ -1,7 +1,5 @@
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
-
 use crate::{__setter};
+use crate::private_prelude::*;
 
 /// Start of comment
 #[derive(Debug, Default, XmlRead, XmlWrite)]

@@ -95,3 +95,9 @@ pub mod styles;
 
 pub use crate::docx::{Docx, DocxFile};
 pub use crate::error::{DocxError, DocxResult};
+
+pub(crate) mod private_prelude {
+    pub use hard_xml::{XmlRead, XmlResult, XmlWrite, XmlWriter};
+    pub use std::borrow::Cow;
+}
+

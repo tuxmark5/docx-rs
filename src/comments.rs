@@ -2,10 +2,10 @@
 //!
 //! The corresponding ZIP item is `/word/comments.xml`.
 
-use std::borrow::Cow;
-use strong_xml::{XmlRead};
-
-use crate::document::Paragraph;
+use crate::{
+    document::Paragraph,
+    private_prelude::*,
+};
 
 /// The root element of the comments document part.
 #[derive(Debug, Default, XmlRead)]
@@ -24,6 +24,14 @@ pub struct Comment<'a> {
     // Specifies the id of the comment.
     #[xml(attr = "w:id")]
     pub id: Cow<'a, str>,
+
+    // Specifies the author of the comment.
+    #[xml(attr = "w:author")]
+    pub author: Cow<'a, str>,
+
+    // Specifies the date of the comment.
+    #[xml(attr = "w:date")]
+    pub date: Cow<'a, str>,
 
     // Specifies the body of the comment.
     #[xml(child = "w:p")]

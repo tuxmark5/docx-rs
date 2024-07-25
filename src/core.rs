@@ -2,10 +2,9 @@
 //!
 //! The corresponding ZIP item is `/docProps/core.xml`.
 
-use std::borrow::Cow;
 use std::io::Write;
-use strong_xml::{XmlRead, XmlResult, XmlWrite, XmlWriter};
 
+use crate::private_prelude::*;
 use crate::schema::SCHEMA_CORE;
 
 #[derive(Debug, Default, XmlRead)]

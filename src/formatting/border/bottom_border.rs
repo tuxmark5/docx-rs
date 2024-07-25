@@ -1,7 +1,9 @@
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
-
-use crate::{__setter, __xml_test_suites, formatting::BorderStyle};
+use crate::{
+    __setter, 
+    __xml_test_suites, 
+    formatting::BorderStyle,
+    private_prelude::*,
+};
 
 #[derive(Debug, Default, XmlRead, XmlWrite)]
 #[cfg_attr(test, derive(PartialEq))]

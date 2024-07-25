@@ -1,9 +1,9 @@
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
-
 use crate::{
-    __setter, __string_enum, __xml_test_suites,
+    __setter, 
+    __string_enum, 
+    __xml_test_suites,
     formatting::{CharacterProperty, ParagraphProperty},
+    private_prelude::*,
 };
 
 /// Style

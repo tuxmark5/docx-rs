@@ -1,17 +1,13 @@
 use derive_more::From;
-use std::borrow::Cow;
 use std::fmt::{self, Display};
 use std::str::FromStr;
-use strong_xml::{XmlRead, XmlWrite};
 
 use crate::{
-    __setter, __xml_test_suites,
-    document::{
-        BookmarkEnd, BookmarkStart, 
-        CommentRangeEnd, CommentRangeStart, 
-        Hyperlink, Run, RunContent, Text
-    },
+    __setter, 
+    __xml_test_suites,
+    document::*,
     formatting::ParagraphProperty,
+    private_prelude::*,
 };
 
 /// Paragraph
@@ -53,7 +49,8 @@ pub struct Paragraph<'a> {
         child = "w:r",
         child = "w:hyperlink",
         child = "w:bookmarkStart",
-        child = "w:bookmarkEnd"
+        child = "w:bookmarkEnd",
+        child = "w:smartTag"
     )]
     pub content: Vec<ParagraphContent<'a>>,
 }
@@ -81,7 +78,7 @@ impl<'a> Paragraph<'a> {
             .iter()
             .filter_map(|content| match content {
                 ParagraphContent::Run(run) => Some(run.iter_text()),
-                ParagraphContent::Link(link) => Some(link.content.iter_text()),
+                ParagraphContent::Link(link) => link.content.as_ref().map(|c| c.iter_text()),
                 _ => None,
             })
             .flatten()
@@ -92,7 +89,7 @@ impl<'a> Paragraph<'a> {
             .iter_mut()
             .filter_map(|content| match content {
                 ParagraphContent::Run(run) => Some(run.iter_text_mut()),
-                ParagraphContent::Link(link) => Some(link.content.iter_text_mut()),
+                ParagraphContent::Link(link) => link.content.as_mut().map(|c| c.iter_text_mut()),
                 _ => None,
             })
             .flatten()
@@ -115,6 +112,8 @@ pub enum ParagraphContent<'a> {
     BookmarkStart(BookmarkStart<'a>),
     #[xml(tag = "w:bookmarkEnd")]
     BookmarkEnd(BookmarkEnd<'a>),
+    #[xml(tag = "w:smartTag")]
+    SmartTag(SmartTag<'a>),
 }
 
 #[derive(Copy, Clone, Debug, Default)]

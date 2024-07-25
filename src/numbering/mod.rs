@@ -8,8 +8,7 @@ pub use self::{
     level::*,
 };
 
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
+use crate::private_prelude::*;
 
 /// The root element of the numbering document part.
 #[derive(Debug, Default, XmlRead)]

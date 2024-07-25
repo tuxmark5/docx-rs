@@ -1,7 +1,9 @@
-use std::borrow::Cow;
-use strong_xml::{XmlRead, XmlWrite};
-
-use crate::{__setter, __xml_test_suites, document::Run};
+use crate::{
+    __setter, 
+    __xml_test_suites, 
+    document::Run,
+    private_prelude::*,
+};
 
 /// The root element of a hyperlink within the paragraph
 #[derive(Debug, Default, XmlRead, XmlWrite)]
@@ -16,13 +18,13 @@ pub struct Hyperlink<'a> {
     pub anchor: Option<Cow<'a, str>>,
     #[xml(child = "w:r")]
     /// Link content
-    pub content: Run<'a>,
+    pub content: Option<Run<'a>>,
 }
 
 impl<'a> Hyperlink<'a> {
     __setter!(id: Option<Cow<'a, str>>);
     __setter!(anchor: Option<Cow<'a, str>>);
-    __setter!(content: Run<'a>);
+    __setter!(content: Option<Run<'a>>);
 }
 
 __xml_test_suites!(

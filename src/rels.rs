@@ -3,10 +3,9 @@
 //! The corresponding ZIP item is `/_rels/.rels` (package-relationship) or
 //! `/word/_rels/document.xml.rels` (part-relationship).
 
-use std::borrow::Cow;
 use std::io::Write;
-use strong_xml::{XmlRead, XmlResult, XmlWrite, XmlWriter};
 
+use crate::private_prelude::*;
 use crate::schema::SCHEMA_RELATIONSHIPS;
 
 #[derive(Debug, Default, XmlRead)]

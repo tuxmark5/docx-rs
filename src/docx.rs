@@ -1,8 +1,19 @@
-use std::fs::File;
-use std::io::{Read, Seek, Write};
-use std::path::Path;
-use strong_xml::{XmlRead, XmlWrite, XmlWriter};
-use zip::{result::ZipError, write::FileOptions, CompressionMethod, ZipArchive, ZipWriter};
+use bytes::Bytes;
+
+use std::{
+    collections::HashMap,
+    fs::File,
+    io::{Read, Seek, Write},
+    path::Path,
+};
+
+use zip::{
+    result::ZipError, 
+    write::FileOptions, 
+    CompressionMethod, 
+    ZipArchive, 
+    ZipWriter
+};
 
 use crate::{
     app::App,
@@ -13,6 +24,7 @@ use crate::{
     error::DocxResult,
     font_table::FontTable,
     numbering::Numberings,
+    private_prelude::*,
     rels::Relationships,
     schema::{
         SCHEMA_CORE, SCHEMA_FONT_TABLE, SCHEMA_OFFICE_DOCUMENT, SCHEMA_REL_EXTENDED, SCHEMA_STYLES,
@@ -43,6 +55,8 @@ pub struct Docx<'a> {
     pub rels: Relationships<'a>,
     /// Specifies the part-level relationship to the main document part
     pub document_rels: Option<Relationships<'a>>,
+    /// Media files
+    pub media: HashMap<String, Bytes>,
 }
 
 impl<'a> Docx<'a> {
@@ -130,6 +144,7 @@ pub struct DocxFile {
     numbering: Option<String>,
     rels: String,
     styles: Option<String>,
+    media: HashMap<String, Bytes>,
 }
 
 impl DocxFile {
@@ -171,6 +186,22 @@ impl DocxFile {
         let rels = read!(Relationships, "_rels/.rels");
         let styles = option_read!(Styles, "word/styles.xml");
 
+        let mut media = HashMap::new();
+
+        for i in 0..zip.len() {
+            let mut entry = zip.by_index(i)?;
+            let name = entry.name();
+
+            if name.starts_with("word/media/") {
+                let name = name.to_string();
+
+                let mut data = Vec::with_capacity(entry.size() as usize);
+                entry.read_to_end(&mut data)?;
+
+                media.insert(name, Bytes::from(data));
+            }
+        }
+
         Ok(DocxFile {
             app,
             comments,
@@ -182,6 +213,7 @@ impl DocxFile {
             numbering,
             rels,
             styles,
+            media,
         })
     }
 
@@ -210,7 +242,9 @@ impl DocxFile {
         let content_types = ContentTypes::from_str(&self.content_types)?;
 
         let core = if let Some(content) = &self.core {
-            Some(Core::from_str(content)?)
+            //Some(Core::from_str(content)?)
+            // FIXME: workaround for malformed xmls
+            Core::from_str(content).ok()
         } else {
             None
         };
@@ -221,11 +255,10 @@ impl DocxFile {
             None
         };
 
-        let font_table = if let Some(content) = &self.font_table {
-            Some(FontTable::from_str(content)?)
-        } else {
-            None
-        };
+        let font_table = self.font_table
+            .as_ref()
+            .map(|c| FontTable::from_str(c))
+            .transpose()?;
 
         let numbering = if let Some(content) = &self.numbering {
             Some(Numberings::from_str(content)?)
@@ -242,6 +275,8 @@ impl DocxFile {
             .transpose()?
             .unwrap_or_default();
 
+        let media = self.media.clone();
+
         Ok(Docx {
             app,
             comments,
@@ -253,6 +288,7 @@ impl DocxFile {
             numbering,
             rels,
             styles,
+            media,
         })
     }
 }

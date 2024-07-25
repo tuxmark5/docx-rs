@@ -7,10 +7,12 @@ mod bookmark_end;
 mod bookmark_start;
 mod r#break;
 mod comment_range;
+mod drawing;
 mod grid_column;
 mod hyperlink;
 mod paragraph;
 mod run;
+mod smart_tag;
 mod tab;
 mod table;
 mod table_cell;
@@ -23,12 +25,13 @@ pub use self::{
     bookmark_end::*, 
     bookmark_start::*, 
     comment_range::*, 
+    drawing::*,
     grid_column::*, 
     hyperlink::*, 
     paragraph::*,
     r#break::*, 
     run::*, 
-    table::*, 
+    smart_tag::SmartTag,
     table::*, 
     table_cell::*, 
     table_grid::*, 
@@ -36,8 +39,8 @@ pub use self::{
     text::*,
 };
 
+use hard_xml::{XmlRead, XmlResult, XmlWrite, XmlWriter};
 use std::io::Write;
-use strong_xml::{XmlRead, XmlResult, XmlWrite, XmlWriter};
 
 use crate::__xml_test_suites;
 use crate::schema::SCHEMA_MAIN;
